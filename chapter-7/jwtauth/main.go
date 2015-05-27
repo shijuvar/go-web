@@ -19,11 +19,12 @@ const (
 	pubKeyPath  = "keys/app.rsa.pub" // openssl rsa -in app.rsa -pubout > app.rsa.pub
 )
 
-// private key and public key
+// verify key and sign key
 var (
 	verifyKey, signKey []byte
 )
 
+//struct User for parsing login credentials
 type User struct {
 	UserName string `json:"username"`
 	Password string `json:"password"`
@@ -46,7 +47,7 @@ func init() {
 	}
 }
 
-// reads the form values, checks them and creates the token
+// reads the login credentials, checks them and creates the JWT token
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	var user User
