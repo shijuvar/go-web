@@ -50,3 +50,12 @@ func (r *TaskRepository) GetById(id string) (task models.Task, err error) {
 	err = r.C.FindId(bson.ObjectIdHex(id)).One(&task)
 	return
 }
+func (r *TaskRepository) GetByUser(user string) []models.Task {
+	var tasks []models.Task
+	iter := r.C.Find(bson.M{"createdby": user}).Iter()
+	result := models.Task{}
+	for iter.Next(&result) {
+		tasks = append(tasks, result)
+	}
+	return tasks
+}

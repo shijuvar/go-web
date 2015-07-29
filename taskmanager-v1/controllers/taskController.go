@@ -72,6 +72,23 @@ func GetTaskById(w http.ResponseWriter, r *http.Request) {
 		w.Write(j)
 	}
 }
+func GetTasksByUser(w http.ResponseWriter, r *http.Request) {
+	// Get id from the incoming url
+	vars := mux.Vars(r)
+	user := vars["id"]
+	context := NewContext()
+	defer context.Close()
+	c := context.DbCollection("tasks")
+	repo := &data.NoteRepository{c}
+	tasks := repo.GetByUser(user)
+	j, err := json.Marshal(TasksResource{Data: tasks})
+	if err != nil {
+		panic(err)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(j)
+}
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
