@@ -3,7 +3,7 @@ package data
 import (
 	"time"
 
-	"github.com/shijuvar/go-web/taskmanager-v1/models"
+	"github.com/shijuvar/go-web/taskmanager/models"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )

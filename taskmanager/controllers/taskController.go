@@ -79,7 +79,7 @@ func GetTasksByUser(w http.ResponseWriter, r *http.Request) {
 	context := NewContext()
 	defer context.Close()
 	c := context.DbCollection("tasks")
-	repo := &data.NoteRepository{c}
+	repo := &data.TaskRepository{c}
 	tasks := repo.GetByUser(user)
 	j, err := json.Marshal(TasksResource{Data: tasks})
 	if err != nil {

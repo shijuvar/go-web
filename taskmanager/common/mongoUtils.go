@@ -40,7 +40,7 @@ func addIndexes() {
 		Sparse:     true,
 	}
 	// Add indexes into MongoDB
-	session := GetSession()
+	session := GetSession().Copy()
 	defer session.Close()
 	taskCol := session.DB("taskdb").C("tasks")
 	noteCol := session.DB("taskdb").C("notes")
