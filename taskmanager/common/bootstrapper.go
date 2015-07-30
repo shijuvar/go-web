@@ -1,6 +1,6 @@
 package common
 
-func init() {
+func StartUp() {
 	// Initialize private/public keys for JWT authentication
 	initKeys()
 	// Start a MongoDB session

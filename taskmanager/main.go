@@ -5,16 +5,20 @@ import (
 	"net/http"
 
 	"github.com/codegangsta/negroni"
-	_ "github.com/shijuvar/go-web/taskmanager/common"
+	"github.com/shijuvar/go-web/taskmanager/common"
 	"github.com/shijuvar/go-web/taskmanager/routers"
 )
 
 //Entry point of the program
 func main() {
+
+	// Calls startup logic
+	common.StartUp()
+	// Get the mux router object
 	router := routers.InitRoutes()
+	// Create a negroni instance
 	n := negroni.Classic()
 	n.UseHandler(router)
-	//http.ListenAndServe(":5000", n)
 
 	server := &http.Server{
 		Addr:    ":8080",

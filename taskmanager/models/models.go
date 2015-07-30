@@ -13,7 +13,7 @@ type (
 		LastName     string        `json:"lastname"`
 		Email        string        `json:"email"`
 		Password     string        `json:"password,omitempty"`
-		HashPassword []byte        `json:"hashpassword"`
+		HashPassword []byte        `json:"hashpassword,omitempty"`
 	}
 	Task struct {
 		Id          bson.ObjectId `bson:"_id,omitempty" json:"id"`
