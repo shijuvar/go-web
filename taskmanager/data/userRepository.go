@@ -19,6 +19,7 @@ func (r *UserRepository) CreateUser(user *models.User) error {
 		panic(err)
 	}
 	user.HashPassword = hpass
+	//clear the incoming text password
 	user.Password = ""
 	err = r.C.Insert(&user)
 	return err
@@ -30,6 +31,7 @@ func (r *UserRepository) Login(user models.User) (u models.User, err error) {
 	if err != nil {
 		return
 	}
+	// Validate password
 	err = bcrypt.CompareHashAndPassword(u.HashPassword, []byte(user.Password))
 	if err != nil {
 		u = models.User{}

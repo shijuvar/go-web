@@ -11,6 +11,8 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// Handler for HTTP Post - "/tasks"
+// Insert a new Task document
 func CreateTask(w http.ResponseWriter, r *http.Request) {
 	var dataResource TaskResource
 	// Decode the incoming Task json
@@ -25,7 +27,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	repo := &data.TaskRepository{c}
 	// Insert a task document
 	repo.Create(task)
-	if j, err := json.Marshal(task); err != nil {
+	if j, err := json.Marshal(TaskResource{Data: *task}); err != nil {
 		log.Fatal(err)
 	} else {
 		w.Header().Set("Content-Type", "application/json")
@@ -33,6 +35,9 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		w.Write(j)
 	}
 }
+
+// Handler for HTTP Get - "/tasks"
+// Returns all Task documents
 func GetTasks(w http.ResponseWriter, r *http.Request) {
 	context := NewContext()
 	defer context.Close()
@@ -47,7 +52,11 @@ func GetTasks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(j)
 }
+
+// Handler for HTTP Get - "/tasks/{id}"
+// Returns a single Task document by id
 func GetTaskById(w http.ResponseWriter, r *http.Request) {
+	// Get id from the incoming url
 	vars := mux.Vars(r)
 	id := vars["id"]
 	context := NewContext()
@@ -72,6 +81,9 @@ func GetTaskById(w http.ResponseWriter, r *http.Request) {
 		w.Write(j)
 	}
 }
+
+// Handler for HTTP Get - "/tasks/users/{id}"
+// Returns all Tasks created by a User
 func GetTasksByUser(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
@@ -89,6 +101,9 @@ func GetTasksByUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(j)
 }
+
+// Handler for HTTP Put - "/tasks/{id}"
+// Update an existing Task document
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
@@ -112,6 +127,9 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 	}
 }
+
+// Handler for HTTP Delete - "/tasks/{id}"
+// Delete an existing Task document
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]

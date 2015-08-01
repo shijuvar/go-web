@@ -27,6 +27,12 @@ func createDbSession() {
 // Add indexes into MongoDB
 func addIndexes() {
 	var err error
+	userIndex := mgo.Index{
+		Key:        []string{"email"},
+		Unique:     true,
+		Background: true,
+		Sparse:     true,
+	}
 	taskIndex := mgo.Index{
 		Key:        []string{"createdby"},
 		Unique:     false,
@@ -42,8 +48,14 @@ func addIndexes() {
 	// Add indexes into MongoDB
 	session := GetSession().Copy()
 	defer session.Close()
+	userCol := session.DB("taskdb").C("users")
 	taskCol := session.DB("taskdb").C("tasks")
 	noteCol := session.DB("taskdb").C("notes")
+
+	err = userCol.EnsureIndex(userIndex)
+	if err != nil {
+		panic(err)
+	}
 	err = taskCol.EnsureIndex(taskIndex)
 	if err != nil {
 		panic(err)
