@@ -18,7 +18,7 @@ const tmpl = `Notes are:
 `
 
 func main() {
-	//define an instance
+	//Create slice of Note objects
 	notes := []Note{
 		{"text/template", "Template generates textual output"},
 		{"html/template", "Template generates HTML output"},
@@ -35,9 +35,8 @@ func main() {
 	}
 
 	//Applies a parsed template to the slice of Note objects
-	err1 := t.Execute(os.Stdout, notes)
-	if err1 != nil {
-		log.Fatal("Execute: ", err1)
+	if err := t.Execute(os.Stdout, notes); err != nil {
+		log.Fatal("Execute: ", err)
 		return
 	}
 }

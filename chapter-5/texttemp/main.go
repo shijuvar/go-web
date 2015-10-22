@@ -14,7 +14,7 @@ type Note struct {
 const tmpl = `Note - Title: {{.Title}}, Description: {{.Description}}`
 
 func main() {
-	//define an instance of Note struct
+	//Create an instance of Note struct
 	note := Note{"text/templates", "Template generates textual output"}
 
 	//create a new template with a name
@@ -26,11 +26,9 @@ func main() {
 		log.Fatal("Parse: ", err)
 		return
 	}
-
 	//Applies a parsed template to the data of Note object
-	err1 := t.Execute(os.Stdout, note)
-	if err1 != nil {
-		log.Fatal("Execute: ", err1)
+	if err := t.Execute(os.Stdout, note); err != nil {
+		log.Fatal("Execute: ", err)
 		return
 	}
 }

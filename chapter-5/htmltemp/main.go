@@ -73,7 +73,7 @@ func addNote(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "add", "base", nil)
 }
 
-//Handler for "/notes/edit/{id}" for edit an item
+//Handler for "/notes/edit/{id}" to edit an item
 func editNote(w http.ResponseWriter, r *http.Request) {
 	var viewModel EditNote
 	//Read value from route variable
