@@ -13,9 +13,7 @@ func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	token := r.Header.Get("X-AppToken")
 	if token == "bXlVc2VybmFtZTpteVBhc3N3b3Jk" {
 		log.Printf("Authorized to the system")
-		context.Set(r, "user", "Shiju Varghese")
-		//Provide an access token to response's http header
-		w.Header().Add("Access_Token", "6ba7b814-9dad-11d1-80b4-00c04fd430c8")
+		context.Set(r, "user", "Shiju Varghese")		
 		next(w, r)
 	} else {
 		http.Error(w, "Not Authorized", 401)

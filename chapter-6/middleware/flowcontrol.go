@@ -8,15 +8,15 @@ import (
 
 func middlewareFirst(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println("MiddlewareFirst - Before Hnadler")
+		log.Println("MiddlewareFirst - Before Handler")
 		next.ServeHTTP(w, r)
-		log.Println("MiddlewareFirst - After Hnadler")
+		log.Println("MiddlewareFirst - After Handler")
 	})
 }
 
 func middlewareSecond(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println("MiddlewareSecond - Before Hnadler")
+		log.Println("MiddlewareSecond - Before Handler")
 		if r.URL.Path == "/message" {
 			if r.URL.Query().Get("password") == "pass123" {
 				log.Println("Authorized to the system")
@@ -29,7 +29,7 @@ func middlewareSecond(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		}
 
-		log.Println("MiddlewareSecond - After Hnadler")
+		log.Println("MiddlewareSecond - After Handler")
 	})
 }
 
