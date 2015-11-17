@@ -1,10 +1,10 @@
 package lib_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"testing"
 )
 
 func TestLib(t *testing.T) {
