@@ -19,12 +19,13 @@ var _ = Describe("Users", func() {
 	var w *httptest.ResponseRecorder
 
 	BeforeEach(func() {
-		r = mux.NewRouter()
+		r = mux.NewRouter() 
 	})
 
-	Describe("HTTP Get on '/users'", func() {
-		Context("Get collection of Users", func() {
-			It("should get three Users", func() {
+	Describe("Get Users", func() {
+		Context("Get all Users", func() {
+			 //providing mocked data of 3 users 	
+			It("should get list of Users", func() {
 				r.Handle("/users", GetUsers(userRepository)).Methods("GET")
 				req, err := http.NewRequest("GET", "/users", nil)
 				Expect(err).NotTo(HaveOccurred())
@@ -33,13 +34,14 @@ var _ = Describe("Users", func() {
 				Expect(w.Code).To(Equal(200))
 				var users []User
 				json.Unmarshal(w.Body.Bytes(), &users)
+				//Verifying mocked data of 3 users 
 				Expect(len(users)).To(Equal(3))
 			})
 		})
 	})
 
-	Describe("HTTP Post '/user'", func() {
-		Context("Provide a valid data User data", func() {
+	Describe("Post a new User", func() {
+		Context("Provide a valid User data", func() {
 			It("should create a new User and get HTTP Status: 201", func() {
 				r.Handle("/users", CreateUser(userRepository)).Methods("POST")
 				userJson := `{"firstname": "Alex", "lastname": "John", "email": "alex@xyz.com"}`
