@@ -6,7 +6,7 @@ import (
 	"github.com/shijuvar/go-web/taskmanager/common"
 )
 
-//Struct used for maintaining HTTP Request Context
+// Struct used for maintaining HTTP Request Context
 type Context struct {
 	MongoSession *mgo.Session
 }
@@ -16,7 +16,7 @@ func (c *Context) Close() {
 	c.MongoSession.Close()
 }
 
-//Returns a collection from the database.
+// Returns mgo.collection for the given name
 func (c *Context) DbCollection(name string) *mgo.Collection {
 	return c.MongoSession.DB("taskdb").C(name)
 }

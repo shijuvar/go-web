@@ -1,7 +1,6 @@
 package common
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,12 +16,12 @@ const (
 	pubKeyPath  = "keys/app.rsa.pub" // openssl rsa -in app.rsa -pubout > app.rsa.pub
 )
 
-// private key for signing and public key for verification
+// Private key for signing and public key for verification
 var (
 	verifyKey, signKey []byte
 )
 
-// read the key files before starting http handlers
+// Read the key files before starting http handlers
 func initKeys() {
 	var err error
 
@@ -38,18 +37,20 @@ func initKeys() {
 		panic(err)
 	}
 }
+
+// Generate JWT token
 func GenerateJWT(name, role string) string {
 	// create a signer for rsa 256
 	t := jwt.New(jwt.GetSigningMethod("RS256"))
 
-	// set our claims
+	// set claims for JWT token
 	t.Claims["iss"] = "admin"
 	t.Claims["UserInfo"] = struct {
 		Name string
 		Role string
 	}{name, role}
 
-	// set the expire time
+	// set the expire time for JWT token
 	t.Claims["exp"] = time.Now().Add(time.Minute * 20).Unix()
 	tokenString, err := t.SignedString(signKey)
 	if err != nil {
@@ -62,8 +63,8 @@ func GenerateJWT(name, role string) string {
 func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	// validate the token
 	token, err := jwt.ParseFromRequest(r, func(token *jwt.Token) (interface{}, error) {
-		// since we only use the one private key to sign the tokens,
-		// we also only use its public counter part to verify
+
+		// Verify the token with public key, which is the counter part of private key
 		return verifyKey, nil
 	})
 
@@ -74,23 +75,17 @@ func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 			vErr := err.(*jwt.ValidationError)
 
 			switch vErr.Errors {
-			case jwt.ValidationErrorExpired:
-				w.WriteHeader(http.StatusUnauthorized)
-				response := Response{"Token Expired, get a new one"}
-				jsonResponse(response, w)
+			case jwt.ValidationErrorExpired: //JWT expired
+				DisplayAppError(w, err, "Token expired, get a new Token", 401)
 				return
 
 			default:
-				response := Response{"Error while Parsing Token!"}
-				jsonResponse(response, w)
-				log.Printf("ValidationError error: %+v\n", vErr.Errors)
+				DisplayAppError(w, err, "Error while parsing Token!", 500)
 				return
 			}
 
-		default: // something else went wrong
-			response := Response{"Error while Parsing Token!"}
-			jsonResponse(response, w)
-			log.Printf("Token parse error: %v\n", err)
+		default:
+			DisplayAppError(w, err, "Error while parsing Token!", 500)
 			return
 		}
 
@@ -98,22 +93,6 @@ func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	if token.Valid {
 		next(w, r)
 	} else {
-		w.WriteHeader(http.StatusUnauthorized)
-		response := Response{"Invalid token"}
-		jsonResponse(response, w)
+		DisplayAppError(w, err, "Invalid Token", 401)
 	}
-}
-
-type Response struct {
-	Data string `json:"error"`
-}
-
-func jsonResponse(response Response, w http.ResponseWriter) {
-	json, err := json.Marshal(response)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(json)
 }

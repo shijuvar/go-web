@@ -2,22 +2,25 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/shijuvar/go-web/taskmanager/common"
 	"github.com/shijuvar/go-web/taskmanager/data"
 	"github.com/shijuvar/go-web/taskmanager/models"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
+// Handler for HTTP Post - "/notes"
+// Insert a new Note document for a TaskId
 func CreateNote(w http.ResponseWriter, r *http.Request) {
 	var dataResource NoteResource
 	// Decode the incoming Note json
 	err := json.NewDecoder(r.Body).Decode(&dataResource)
 	if err != nil {
-		panic(err)
+		common.DisplayAppError(w, err, "Invalid Note data", 500)
+		return
 	}
 	noteModel := dataResource.Data
 	note := &models.TaskNote{
@@ -31,13 +34,17 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	repo := &data.NoteRepository{c}
 	repo.Create(note)
 	if j, err := json.Marshal(note); err != nil {
-		log.Fatal(err)
+		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		return
 	} else {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
 		w.Write(j)
 	}
 }
+
+// Handler for HTTP Get - "/notes/tasks/{id}
+// Returns all Notes documents under a TaskId
 func GetNotesByTask(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -48,12 +55,16 @@ func GetNotesByTask(w http.ResponseWriter, r *http.Request) {
 	notes := repo.GetByTask(id)
 	j, err := json.Marshal(NotesResource{Data: notes})
 	if err != nil {
-		panic(err)
+		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(j)
 }
+
+// Handler for HTTP Get - "/notes"
+// Returns all Note documents
 func GetNotes(w http.ResponseWriter, r *http.Request) {
 	context := NewContext()
 	defer context.Close()
@@ -62,12 +73,16 @@ func GetNotes(w http.ResponseWriter, r *http.Request) {
 	notes := repo.GetAll()
 	j, err := json.Marshal(NotesResource{Data: notes})
 	if err != nil {
-		panic(err)
+		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(j)
 }
+
+// Handler for HTTP Get - "/notes/{id}"
+// Returns a single Note document by id
 func GetNoteById(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
@@ -82,18 +97,22 @@ func GetNoteById(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusNoContent)
 			return
 		} else {
-			w.WriteHeader(http.StatusInternalServerError)
+			common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
 			return
 		}
 	}
 	if j, err := json.Marshal(note); err != nil {
-		log.Fatal(err)
+		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		return
 	} else {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(j)
 	}
 }
+
+// Handler for HTTP Put - "/notes/{id}"
+// Update an existing Note document
 func UpdateNote(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
@@ -102,7 +121,8 @@ func UpdateNote(w http.ResponseWriter, r *http.Request) {
 	// Decode the incoming Note json
 	err := json.NewDecoder(r.Body).Decode(&dataResource)
 	if err != nil {
-		panic(err)
+		common.DisplayAppError(w, err, "Invalid Note data", 500)
+		return
 	}
 	noteModel := dataResource.Data
 	note := &models.TaskNote{
@@ -115,11 +135,15 @@ func UpdateNote(w http.ResponseWriter, r *http.Request) {
 	repo := &data.NoteRepository{c}
 	//Update note document
 	if err := repo.Update(note); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		return
 	} else {
 		w.WriteHeader(http.StatusNoContent)
 	}
 }
+
+// Handler for HTTP Delete - "/notes/{id}"
+// Delete an existing Note document
 func DeleteNote(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
@@ -131,7 +155,7 @@ func DeleteNote(w http.ResponseWriter, r *http.Request) {
 	//Delete a note document
 	err := repo.Delete(id)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)

@@ -1,6 +1,9 @@
 package common
 
 import (
+	"log"
+	"time"
+
 	"gopkg.in/mgo.v2"
 )
 
@@ -9,18 +12,28 @@ var session *mgo.Session
 func GetSession() *mgo.Session {
 	if session == nil {
 		var err error
-		session, err = mgo.Dial("localhost")
+		session, err = mgo.DialWithInfo(&mgo.DialInfo{
+			Addrs:    []string{Config.MongoDBHost},
+			Username: Config.DBUser,
+			Password: Config.DBPwd,
+			Timeout:  10 * time.Second,
+		})
 		if err != nil {
-			panic(err)
+			log.Fatalf("[GetSession]: %s\n", err)
 		}
 	}
 	return session
 }
 func createDbSession() {
 	var err error
-	session, err = mgo.Dial("localhost")
+	session, err = mgo.DialWithInfo(&mgo.DialInfo{
+		Addrs:    []string{Config.MongoDBHost},
+		Username: Config.DBUser,
+		Password: Config.DBPwd,
+		Timeout:  10 * time.Second,
+	})
 	if err != nil {
-		panic(err)
+		log.Fatalf("[createDbSession]: %s\n", err)
 	}
 }
 
@@ -48,20 +61,20 @@ func addIndexes() {
 	// Add indexes into MongoDB
 	session := GetSession().Copy()
 	defer session.Close()
-	userCol := session.DB("taskdb").C("users")
-	taskCol := session.DB("taskdb").C("tasks")
-	noteCol := session.DB("taskdb").C("notes")
+	userCol := session.DB(Config.Database).C("users")
+	taskCol := session.DB(Config.Database).C("tasks")
+	noteCol := session.DB(Config.Database).C("notes")
 
 	err = userCol.EnsureIndex(userIndex)
 	if err != nil {
-		panic(err)
+		log.Fatalf("[addIndexes]: %s\n", err)
 	}
 	err = taskCol.EnsureIndex(taskIndex)
 	if err != nil {
-		panic(err)
+		log.Fatalf("[addIndexes]: %s\n", err)
 	}
 	err = noteCol.EnsureIndex(noteIndex)
 	if err != nil {
-		panic(err)
+		log.Fatalf("[addIndexes]: %s\n", err)
 	}
 }
