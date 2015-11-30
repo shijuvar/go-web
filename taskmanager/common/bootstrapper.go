@@ -1,7 +1,7 @@
 package common
 
 func StartUp() {
-	// Initialize Config
+	// Initialize AppConfig variable
 	initConfig()
 	// Initialize private/public keys for JWT authentication
 	initKeys()

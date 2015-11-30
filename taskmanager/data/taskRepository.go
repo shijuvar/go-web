@@ -22,7 +22,7 @@ func (r *TaskRepository) Create(task *models.Task) error {
 }
 
 func (r *TaskRepository) Update(task *models.Task) error {
-	// partia update on MogoDB
+	// partial update on MogoDB
 	err := r.C.Update(bson.M{"_id": task.Id},
 		bson.M{"$set": bson.M{
 			"name":        task.Name,

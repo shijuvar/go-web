@@ -21,7 +21,7 @@ func main() {
 	n.UseHandler(router)
 
 	server := &http.Server{
-		Addr:    common.Config.Server,
+		Addr:    common.AppConfig.Server,
 		Handler: n,
 	}
 	log.Println("Listening...")

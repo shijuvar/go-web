@@ -14,7 +14,7 @@ type (
 	LoginResource struct {
 		Data LoginModel `json:"data"`
 	}
-	//Respose for authorized user Post - /user/login
+	//Response for authorized user Post - /user/login
 	AuthUserResource struct {
 		Data AuthUserModel `json:"data"`
 	}

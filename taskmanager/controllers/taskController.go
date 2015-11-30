@@ -18,7 +18,12 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	// Decode the incoming Task json
 	err := json.NewDecoder(r.Body).Decode(&dataResource)
 	if err != nil {
-		common.DisplayAppError(w, err, "Invalid Task data", 500)
+		common.DisplayAppError(
+			w,
+			err,
+			"Invalid Task data",
+			500,
+		)
 		return
 	}
 	task := &dataResource.Data
@@ -29,7 +34,12 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	// Insert a task document
 	repo.Create(task)
 	if j, err := json.Marshal(TaskResource{Data: *task}); err != nil {
-		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		common.DisplayAppError(
+			w,
+			err,
+			"An unexpected error has occurred",
+			500,
+		)
 		return
 	} else {
 		w.Header().Set("Content-Type", "application/json")
@@ -48,7 +58,12 @@ func GetTasks(w http.ResponseWriter, r *http.Request) {
 	tasks := repo.GetAll()
 	j, err := json.Marshal(TasksResource{Data: tasks})
 	if err != nil {
-		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		common.DisplayAppError(
+			w,
+			err,
+			"An unexpected error has occurred",
+			500,
+		)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -72,12 +87,22 @@ func GetTaskById(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusNoContent)
 			return
 		} else {
-			common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+			common.DisplayAppError(
+				w,
+				err,
+				"An unexpected error has occurred",
+				500,
+			)
 			return
 		}
 	}
 	if j, err := json.Marshal(task); err != nil {
-		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		common.DisplayAppError(
+			w,
+			err,
+			"An unexpected error has occurred",
+			500,
+		)
 		return
 	} else {
 		w.Header().Set("Content-Type", "application/json")
@@ -99,7 +124,12 @@ func GetTasksByUser(w http.ResponseWriter, r *http.Request) {
 	tasks := repo.GetByUser(user)
 	j, err := json.Marshal(TasksResource{Data: tasks})
 	if err != nil {
-		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		common.DisplayAppError(
+			w,
+			err,
+			"An unexpected error has occurred",
+			500,
+		)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -117,7 +147,12 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	// Decode the incoming Task json
 	err := json.NewDecoder(r.Body).Decode(&dataResource)
 	if err != nil {
-		common.DisplayAppError(w, err, "Invalid Task data", 500)
+		common.DisplayAppError(
+			w,
+			err,
+			"Invalid Task data",
+			500,
+		)
 		return
 	}
 	task := &dataResource.Data
@@ -128,7 +163,12 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	repo := &data.TaskRepository{c}
 	// Update an existing Task document
 	if err := repo.Update(task); err != nil {
-		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		common.DisplayAppError(
+			w,
+			err,
+			"An unexpected error has occurred",
+			500,
+		)
 		return
 	} else {
 		w.WriteHeader(http.StatusNoContent)
@@ -147,7 +187,12 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	// Delete an existing Task document
 	err := repo.Delete(id)
 	if err != nil {
-		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		common.DisplayAppError(
+			w,
+			err,
+			"An unexpected error has occurred",
+			500,
+		)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)

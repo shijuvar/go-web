@@ -13,10 +13,10 @@ func GetSession() *mgo.Session {
 	if session == nil {
 		var err error
 		session, err = mgo.DialWithInfo(&mgo.DialInfo{
-			Addrs:    []string{Config.MongoDBHost},
-			Username: Config.DBUser,
-			Password: Config.DBPwd,
-			Timeout:  10 * time.Second,
+			Addrs:    []string{AppConfig.MongoDBHost},
+			Username: AppConfig.DBUser,
+			Password: AppConfig.DBPwd,
+			Timeout:  60 * time.Second,
 		})
 		if err != nil {
 			log.Fatalf("[GetSession]: %s\n", err)
@@ -27,10 +27,10 @@ func GetSession() *mgo.Session {
 func createDbSession() {
 	var err error
 	session, err = mgo.DialWithInfo(&mgo.DialInfo{
-		Addrs:    []string{Config.MongoDBHost},
-		Username: Config.DBUser,
-		Password: Config.DBPwd,
-		Timeout:  10 * time.Second,
+		Addrs:    []string{AppConfig.MongoDBHost},
+		Username: AppConfig.DBUser,
+		Password: AppConfig.DBPwd,
+		Timeout:  60 * time.Second,
 	})
 	if err != nil {
 		log.Fatalf("[createDbSession]: %s\n", err)
@@ -61,9 +61,9 @@ func addIndexes() {
 	// Add indexes into MongoDB
 	session := GetSession().Copy()
 	defer session.Close()
-	userCol := session.DB(Config.Database).C("users")
-	taskCol := session.DB(Config.Database).C("tasks")
-	noteCol := session.DB(Config.Database).C("notes")
+	userCol := session.DB(AppConfig.Database).C("users")
+	taskCol := session.DB(AppConfig.Database).C("tasks")
+	noteCol := session.DB(AppConfig.Database).C("notes")
 
 	err = userCol.EnsureIndex(userIndex)
 	if err != nil {

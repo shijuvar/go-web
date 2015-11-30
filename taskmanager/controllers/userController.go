@@ -16,7 +16,12 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	// Decode the incoming User json
 	err := json.NewDecoder(r.Body).Decode(&dataResource)
 	if err != nil {
-		common.DisplayAppError(w, err, "Invalid User data", 500)
+		common.DisplayAppError(
+			w,
+			err,
+			"Invalid User data",
+			500,
+		)
 		return
 	}
 	user := &dataResource.Data
@@ -29,7 +34,12 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	// Clean-up the hashpassword to eliminate it from response JSON
 	user.HashPassword = nil
 	if j, err := json.Marshal(UserResource{Data: *user}); err != nil {
-		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		common.DisplayAppError(
+			w,
+			err,
+			"An unexpected error has occurred",
+			500,
+		)
 		return
 	} else {
 		w.Header().Set("Content-Type", "application/json")
@@ -46,7 +56,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Decode the incoming Login json
 	err := json.NewDecoder(r.Body).Decode(&dataResource)
 	if err != nil {
-		common.DisplayAppError(w, err, "Invalid Login data", 500)
+		common.DisplayAppError(
+			w,
+			err,
+			"Invalid Login data",
+			500,
+		)
 		return
 	}
 	loginModel := dataResource.Data
@@ -60,7 +75,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	repo := &data.UserRepository{c}
 	// Authenticate the login user
 	if user, err := repo.Login(loginUser); err != nil {
-		common.DisplayAppError(w, err, "Invalid login credentials", 400)
+		common.DisplayAppError(
+			w,
+			err,
+			"Invalid login credentials",
+			400,
+		)
 		return
 	} else { //if login is successful
 		w.WriteHeader(http.StatusOK)
@@ -75,7 +95,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		}
 		j, err := json.Marshal(AuthUserResource{Data: authUser})
 		if err != nil {
-			common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+			common.DisplayAppError(
+				w,
+				err,
+				"An unexpected error has occurred",
+				500,
+			)
 			return
 		}
 		w.Write(j)

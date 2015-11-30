@@ -16,7 +16,7 @@ type (
 	errorResource struct {
 		Data appError `json:"data"`
 	}
-	Configuration struct {
+	configuration struct {
 		Server, MongoDBHost, DBUser, DBPwd, Database string
 	}
 )
@@ -35,25 +35,25 @@ func DisplayAppError(w http.ResponseWriter, handlerError error, message string, 
 	}
 }
 
-//Config holds the information from config.json file
-var Config Configuration
+// AppConfig holds the configuration values from config.json file
+var AppConfig configuration
 
-//initConfig method is used to initialise Config file
+// Initialize AppConfig
 func initConfig() {
-	loadConfig()
+	loadAppConfig()
 }
 
-//loadConfig method loads Config file
-func loadConfig() {
+// Reads config.json and decode into AppConfig
+func loadAppConfig() {
 	file, err := os.Open("common/config.json")
 	defer file.Close()
 	if err != nil {
 		log.Fatalf("[loadConfig]: %s\n", err)
 	}
 	decoder := json.NewDecoder(file)
-	Config = Configuration{}
-	err = decoder.Decode(&Config)
+	AppConfig = configuration{}
+	err = decoder.Decode(&AppConfig)
 	if err != nil {
-		log.Fatalf("[loadConfig]: %s\n", err)
+		log.Fatalf("[loadAppConfig]: %s\n", err)
 	}
 }
