@@ -53,6 +53,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 // Authenticate with username and apssword
 func Login(w http.ResponseWriter, r *http.Request) {
 	var dataResource LoginResource
+	var token string
 	// Decode the incoming Login json
 	err := json.NewDecoder(r.Body).Decode(&dataResource)
 	if err != nil {
@@ -79,13 +80,22 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			w,
 			err,
 			"Invalid login credentials",
-			400,
+			401,
 		)
 		return
 	} else { //if login is successful
-		w.WriteHeader(http.StatusOK)
+
 		// Generate JWT token
-		token := common.GenerateJWT(user.Email, "member")
+		token, err = common.GenerateJWT(user.Email, "member")
+		if err != nil {
+			common.DisplayAppError(
+				w,
+				err,
+				"Eror while generating the access token",
+				500,
+			)
+			return
+		}
 		w.Header().Set("Content-Type", "application/json")
 		// Clean-up the hashpassword to eliminate it from response JSON
 		user.HashPassword = nil
@@ -103,6 +113,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			)
 			return
 		}
+		w.WriteHeader(http.StatusOK)
 		w.Write(j)
 	}
 }

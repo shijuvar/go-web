@@ -40,7 +40,7 @@ func initKeys() {
 }
 
 // Generate JWT token
-func GenerateJWT(name, role string) string {
+func GenerateJWT(name, role string) (string, error) {
 	// create a signer for rsa 256
 	t := jwt.New(jwt.GetSigningMethod("RS256"))
 
@@ -55,9 +55,9 @@ func GenerateJWT(name, role string) string {
 	t.Claims["exp"] = time.Now().Add(time.Minute * 20).Unix()
 	tokenString, err := t.SignedString(signKey)
 	if err != nil {
-		DisplayAppError(w, err, "Error while generating the Token!", 500)
+		return "", err
 	}
-	return tokenString
+	return tokenString, nil
 }
 
 // Middleware for validating JWT tokens
@@ -77,16 +77,16 @@ func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 
 			switch vErr.Errors {
 			case jwt.ValidationErrorExpired: //JWT expired
-				DisplayAppError(w, err, "Token expired, get a new Token", 401)
+				DisplayAppError(w, err, "Access Token is expired, get a new Token", 401)
 				return
 
 			default:
-				DisplayAppError(w, err, "Error while parsing Token!", 500)
+				DisplayAppError(w, err, "Error while parsing the Access Token!", 500)
 				return
 			}
 
 		default:
-			DisplayAppError(w, err, "Error while parsing Token!", 500)
+			DisplayAppError(w, err, "Error while parsing Access Token!", 500)
 			return
 		}
 
@@ -94,6 +94,6 @@ func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	if token.Valid {
 		next(w, r)
 	} else {
-		DisplayAppError(w, err, "Invalid Token", 401)
+		DisplayAppError(w, err, "Invalid Access Token", 401)
 	}
 }
