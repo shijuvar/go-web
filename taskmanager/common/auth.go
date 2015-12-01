@@ -77,16 +77,28 @@ func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 
 			switch vErr.Errors {
 			case jwt.ValidationErrorExpired: //JWT expired
-				DisplayAppError(w, err, "Access Token is expired, get a new Token", 401)
+				DisplayAppError(
+					w,
+					err,
+					"Access Token is expired, get a new Token",
+					401,
+				)
 				return
 
 			default:
-				DisplayAppError(w, err, "Error while parsing the Access Token!", 500)
+				DisplayAppError(w,
+					err,
+					"Error while parsing the Access Token!",
+					500,
+				)
 				return
 			}
 
 		default:
-			DisplayAppError(w, err, "Error while parsing Access Token!", 500)
+			DisplayAppError(w,
+				err,
+				"Error while parsing Access Token!",
+				500)
 			return
 		}
 
@@ -94,6 +106,10 @@ func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	if token.Valid {
 		next(w, r)
 	} else {
-		DisplayAppError(w, err, "Invalid Access Token", 401)
+		DisplayAppError(w,
+			err,
+			"Invalid Access Token",
+			401,
+		)
 	}
 }

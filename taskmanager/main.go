@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/codegangsta/negroni"
+	"github.com/shijuvar/go-web/taskmanager/Godeps/_workspace/src/github.com/codegangsta/negroni"
 	"github.com/shijuvar/go-web/taskmanager/common"
 	"github.com/shijuvar/go-web/taskmanager/routers"
 )
