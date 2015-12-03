@@ -106,7 +106,8 @@ func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	if token.Valid {
 		next(w, r)
 	} else {
-		DisplayAppError(w,
+		DisplayAppError(
+			w,
 			err,
 			"Invalid Access Token",
 			401,
