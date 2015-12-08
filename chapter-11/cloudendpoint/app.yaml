@@ -1,0 +1,16 @@
+application: go-endpoints-1152
+version: v1
+threadsafe: true
+
+runtime: go
+api_version: go1
+
+handlers:
+- url: /.*
+  script: _go_app
+
+# Important! Even though there's a catch all routing above,
+# without these two lines it's not going to work.
+# Make sure you have this:
+- url: /_ah/spi/.*
+  script: _go_app
