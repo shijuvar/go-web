@@ -5,10 +5,11 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/shijuvar/go-web/taskmanager/common"
-	"github.com/shijuvar/go-web/taskmanager/data"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+
+	"github.com/shijuvar/go-web/taskmanager/common"
+	"github.com/shijuvar/go-web/taskmanager/data"
 )
 
 // Handler for HTTP Post - "/tasks"

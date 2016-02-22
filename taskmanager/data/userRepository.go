@@ -1,10 +1,11 @@
 package data
 
 import (
-	"github.com/shijuvar/go-web/taskmanager/models"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+
+	"github.com/shijuvar/go-web/taskmanager/models"
 )
 
 type UserRepository struct {
