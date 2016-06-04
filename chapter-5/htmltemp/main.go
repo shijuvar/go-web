@@ -76,15 +76,17 @@ func addNote(w http.ResponseWriter, r *http.Request) {
 //Handler for "/notes/edit/{id}" to edit an item
 func editNote(w http.ResponseWriter, r *http.Request) {
 	var viewModel EditNote
+	//change: moved render template call inside if block.
 	//Read value from route variable
 	vars := mux.Vars(r)
 	k := vars["id"]
 	if note, ok := noteStore[k]; ok {
 		viewModel = EditNote{note, k}
+		renderTemplate(w, "edit", "base", viewModel)
 	} else {
 		http.Error(w, "Could not find the resource to edit.", http.StatusBadRequest)
 	}
-	renderTemplate(w, "edit", "base", viewModel)
+
 }
 
 //Handler for "/notes/update/{id}" which update an item into the data store
