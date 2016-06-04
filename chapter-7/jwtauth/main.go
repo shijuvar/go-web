@@ -42,7 +42,7 @@ func init() {
 
 	verifyKey, err = ioutil.ReadFile(pubKeyPath)
 	if err != nil {
-		log.Fatal("Error reading private key")
+		log.Fatal("Error reading public key")
 		return
 	}
 }
