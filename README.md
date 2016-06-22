@@ -1,5 +1,5 @@
 # go-web
-Source code for the book "Web Development with Go"
+Source code for the book "Web Development with Go" published by Apress.
 
 ## TaskManager RESTful API
 Sample REST API app with Go and MongoDB 
