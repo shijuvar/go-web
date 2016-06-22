@@ -59,22 +59,9 @@ func initKeys() {
 	if err != nil {
 		log.Fatalf("[initKeys]: %s\n", err)
 	}
-
-	/*
-		signKey, err = ioutil.ReadFile(privKeyPath)
-		if err != nil {
-			log.Fatalf("[initKeys]: %s\n", err)
-		}
-
-		verifyKey, err = ioutil.ReadFile(pubKeyPath)
-		if err != nil {
-			log.Fatalf("[initKeys]: %s\n", err)
-			panic(err)
-		}
-	*/
 }
 
-// GenerateJWT returns a JWT token
+// GenerateJWT generates a new JWT token
 func GenerateJWT(name, role string) (string, error) {
 	// Create the Claims
 	claims := AppClaims{
@@ -95,26 +82,6 @@ func GenerateJWT(name, role string) (string, error) {
 	}
 	log.Println("after key")
 	return ss, nil
-	/*
-		// create a signer for rsa 256
-		t := jwt.New(jwt.GetSigningMethod("RS256"))
-		t1 := jwt.NewWithClaims()
-
-		// set claims for JWT token
-		t.Claims["iss"] = "admin"
-		t.Claims["UserInfo"] = struct {
-			Name string
-			Role string
-		}{name, role}
-
-		// set the expire time for JWT token
-		t.Claims["exp"] = time.Now().Add(time.Minute * 20).Unix()
-		tokenString, err := t.SignedString(signKey)
-		if err != nil {
-			return "", err
-		}
-		return tokenString, nil
-	*/
 }
 
 // Authorize Middleware for validating JWT tokens
@@ -126,14 +93,6 @@ func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 		// we also only use its public counter part to verify
 		return verifyKey, nil
 	})
-	/*
-		// validate the token
-		token, err := jwt.ParseFromRequest(r, func(token *jwt.Token) (interface{}, error) {
-
-			// Verify the token with public key, which is the counter part of private key
-			return verifyKey, nil
-		})
-	*/
 
 	if err != nil {
 		switch err.(type) {
@@ -170,6 +129,7 @@ func Authorize(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 
 	}
 	if token.Valid {
+		// Set user name to HTTP context
 		context.Set(r, "user", token.Claims.(*AppClaims).UserName)
 		next(w, r)
 	} else {

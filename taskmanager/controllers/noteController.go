@@ -13,8 +13,8 @@ import (
 	"github.com/shijuvar/go-web/taskmanager/models"
 )
 
+// CreateNote inserts a new Note document for a TaskId
 // Handler for HTTP Post - "/notes"
-// Insert a new Note document for a TaskId
 func CreateNote(w http.ResponseWriter, r *http.Request) {
 	var dataResource NoteResource
 	// Decode the incoming Note json
@@ -30,29 +30,29 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	}
 	context := NewContext()
 	defer context.Close()
-	c := context.DbCollection("notes")
+	col := context.DbCollection("notes")
 	//Insert a note document
-	repo := &data.NoteRepository{c}
+	repo := &data.NoteRepository{C: col}
 	repo.Create(note)
-	if j, err := json.Marshal(note); err != nil {
+	j, err := json.Marshal(note)
+	if err != nil {
 		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
 		return
-	} else {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
-		w.Write(j)
 	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	w.Write(j)
 }
 
+// GetNotesByTask returns all Notes documents under a TaskId
 // Handler for HTTP Get - "/notes/tasks/{id}
-// Returns all Notes documents under a TaskId
 func GetNotesByTask(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	context := NewContext()
 	defer context.Close()
-	c := context.DbCollection("notes")
-	repo := &data.NoteRepository{c}
+	col := context.DbCollection("notes")
+	repo := &data.NoteRepository{C: col}
 	notes := repo.GetByTask(id)
 	j, err := json.Marshal(NotesResource{Data: notes})
 	if err != nil {
@@ -64,13 +64,13 @@ func GetNotesByTask(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
+// GetNotes returns all Note documents
 // Handler for HTTP Get - "/notes"
-// Returns all Note documents
 func GetNotes(w http.ResponseWriter, r *http.Request) {
 	context := NewContext()
 	defer context.Close()
-	c := context.DbCollection("notes")
-	repo := &data.NoteRepository{c}
+	col := context.DbCollection("notes")
+	repo := &data.NoteRepository{C: col}
 	notes := repo.GetAll()
 	j, err := json.Marshal(NotesResource{Data: notes})
 	if err != nil {
@@ -82,38 +82,38 @@ func GetNotes(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
+// GetNoteByID returns a single Note document by id
 // Handler for HTTP Get - "/notes/{id}"
-// Returns a single Note document by id
-func GetNoteById(w http.ResponseWriter, r *http.Request) {
+func GetNoteByID(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
 	id := vars["id"]
 	context := NewContext()
 	defer context.Close()
-	c := context.DbCollection("notes")
-	repo := &data.NoteRepository{c}
+	col := context.DbCollection("notes")
+	repo := &data.NoteRepository{C: col}
 	note, err := repo.GetById(id)
 	if err != nil {
 		if err == mgo.ErrNotFound {
 			w.WriteHeader(http.StatusNoContent)
 			return
-		} else {
-			common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
-			return
 		}
-	}
-	if j, err := json.Marshal(note); err != nil {
 		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
 		return
-	} else {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(j)
+
 	}
+	j, err := json.Marshal(note)
+	if err != nil {
+		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
 }
 
+// UpdateNote updates an existing Note document
 // Handler for HTTP Put - "/notes/{id}"
-// Update an existing Note document
 func UpdateNote(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
@@ -132,27 +132,26 @@ func UpdateNote(w http.ResponseWriter, r *http.Request) {
 	}
 	context := NewContext()
 	defer context.Close()
-	c := context.DbCollection("notes")
-	repo := &data.NoteRepository{c}
+	col := context.DbCollection("notes")
+	repo := &data.NoteRepository{C: col}
 	//Update note document
 	if err := repo.Update(note); err != nil {
 		common.DisplayAppError(w, err, "An unexpected error has occurred", 500)
 		return
-	} else {
-		w.WriteHeader(http.StatusNoContent)
 	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
+// DeleteNote deletes an existing Note document
 // Handler for HTTP Delete - "/notes/{id}"
-// Delete an existing Note document
 func DeleteNote(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
 	id := vars["id"]
 	context := NewContext()
 	defer context.Close()
-	c := context.DbCollection("notes")
-	repo := &data.NoteRepository{c}
+	col := context.DbCollection("notes")
+	repo := &data.NoteRepository{C: col}
 	//Delete a note document
 	err := repo.Delete(id)
 	if err != nil {

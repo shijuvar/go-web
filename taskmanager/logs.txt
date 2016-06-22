@@ -2,3 +2,4 @@ ERROR: 2016/06/22 13:28:56 utils.go:32: AppError]: key is invalid
 ERROR: 2016/06/22 13:41:02 utils.go:32: AppError]: key is invalid
 ERROR: 2016/06/22 13:41:12 utils.go:32: AppError]: key is invalid
 ERROR: 2016/06/22 13:41:13 utils.go:32: AppError]: key is invalid
+ERROR: 2016/06/22 16:29:54 utils.go:32: AppError]: token is expired by 2h9m53s
