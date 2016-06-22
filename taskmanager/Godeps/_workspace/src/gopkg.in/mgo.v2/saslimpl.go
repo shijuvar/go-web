@@ -3,7 +3,7 @@
 package mgo
 
 import (
-	"github.com/shijuvar/go-web/taskmanager/Godeps/_workspace/src/gopkg.in/mgo.v2/internal/sasl"
+	"gopkg.in/mgo.v2/internal/sasl"
 )
 
 func saslNew(cred Credential, host string) (saslStepper, error) {

@@ -3,5 +3,6 @@
   "MongoDBHost" : "127.0.0.1",
   "MongoDBUser"	: "",
   "MongoDBPwd"	: "",
-  "Database"    : "taskdb"
+  "Database"    : "taskdb",
+  "LogLevel"    : 4
 }

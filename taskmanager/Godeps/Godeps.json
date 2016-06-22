@@ -1,6 +1,7 @@
 {
 	"ImportPath": "github.com/shijuvar/go-web/taskmanager",
-	"GoVersion": "go1.5.1",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v74",
 	"Deps": [
 		{
 			"ImportPath": "github.com/codegangsta/negroni",
@@ -9,8 +10,13 @@
 		},
 		{
 			"ImportPath": "github.com/dgrijalva/jwt-go",
-			"Comment": "v2.2.0-23-g5ca8014",
-			"Rev": "5ca80149b9d3f8b863af0e2bb6742e608603bd99"
+			"Comment": "v3.0.0-2-gf077707",
+			"Rev": "f0777076321ab64f6efc15a82d9d23b98539b943"
+		},
+		{
+			"ImportPath": "github.com/dgrijalva/jwt-go/request",
+			"Comment": "v3.0.0-2-gf077707",
+			"Rev": "f0777076321ab64f6efc15a82d9d23b98539b943"
 		},
 		{
 			"ImportPath": "github.com/gorilla/context",
@@ -30,8 +36,23 @@
 		},
 		{
 			"ImportPath": "gopkg.in/mgo.v2",
-			"Comment": "r2015.10.05-1-g4d04138",
-			"Rev": "4d04138ffef2791c479c0c8bbffc30b34081b8d9"
+			"Comment": "r2016.02.04-3-g29cc868",
+			"Rev": "29cc868a5ca65f401ff318143f9408d02f4799cc"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2/bson",
+			"Comment": "r2016.02.04-3-g29cc868",
+			"Rev": "29cc868a5ca65f401ff318143f9408d02f4799cc"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2/internal/sasl",
+			"Comment": "r2016.02.04-3-g29cc868",
+			"Rev": "29cc868a5ca65f401ff318143f9408d02f4799cc"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2/internal/scram",
+			"Comment": "r2016.02.04-3-g29cc868",
+			"Rev": "29cc868a5ca65f401ff318143f9408d02f4799cc"
 		}
 	]
 }

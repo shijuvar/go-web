@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	httpcontext "github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -12,8 +13,8 @@ import (
 	"github.com/shijuvar/go-web/taskmanager/data"
 )
 
-// Handler for HTTP Post - "/tasks"
-// Insert a new Task document
+// CreateTask insert a new Task document
+// Handler for HTTP Post - "/tasks
 func CreateTask(w http.ResponseWriter, r *http.Request) {
 	var dataResource TaskResource
 	// Decode the incoming Task json
@@ -30,11 +31,16 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 	task := &dataResource.Data
 	context := NewContext()
 	defer context.Close()
-	c := context.DbCollection("tasks")
-	repo := &data.TaskRepository{c}
+	if val, ok := httpcontext.GetOk(r, "user"); ok {
+		context.User = val.(string)
+	}
+	task.CreatedBy = context.User
+	col := context.DbCollection("tasks")
+	repo := &data.TaskRepository{C: col}
 	// Insert a task document
 	repo.Create(task)
-	if j, err := json.Marshal(TaskResource{Data: *task}); err != nil {
+	j, err := json.Marshal(TaskResource{Data: *task})
+	if err != nil {
 		common.DisplayAppError(
 			w,
 			err,
@@ -42,20 +48,20 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 			500,
 		)
 		return
-	} else {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusCreated)
-		w.Write(j)
 	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	w.Write(j)
+
 }
 
+// GetTasks returns all Task document
 // Handler for HTTP Get - "/tasks"
-// Returns all Task documents
 func GetTasks(w http.ResponseWriter, r *http.Request) {
 	context := NewContext()
 	defer context.Close()
-	c := context.DbCollection("tasks")
-	repo := &data.TaskRepository{c}
+	col := context.DbCollection("tasks")
+	repo := &data.TaskRepository{C: col}
 	tasks := repo.GetAll()
 	j, err := json.Marshal(TasksResource{Data: tasks})
 	if err != nil {
@@ -72,21 +78,22 @@ func GetTasks(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
+// GetTaskById returns a single Task document by id
 // Handler for HTTP Get - "/tasks/{id}"
-// Returns a single Task document by id
 func GetTaskById(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
 	id := vars["id"]
 	context := NewContext()
+
 	defer context.Close()
-	c := context.DbCollection("tasks")
-	repo := &data.TaskRepository{c}
+	col := context.DbCollection("tasks")
+	repo := &data.TaskRepository{C: col}
 	task, err := repo.GetById(id)
 	if err != nil {
 		if err == mgo.ErrNotFound {
 			w.WriteHeader(http.StatusNoContent)
-			return
+
 		} else {
 			common.DisplayAppError(
 				w,
@@ -94,10 +101,12 @@ func GetTaskById(w http.ResponseWriter, r *http.Request) {
 				"An unexpected error has occurred",
 				500,
 			)
-			return
+
 		}
+		return
 	}
-	if j, err := json.Marshal(task); err != nil {
+	j, err := json.Marshal(task)
+	if err != nil {
 		common.DisplayAppError(
 			w,
 			err,
@@ -105,23 +114,22 @@ func GetTaskById(w http.ResponseWriter, r *http.Request) {
 			500,
 		)
 		return
-	} else {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(j)
 	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
 }
 
+// GetTasksByUser returns all Tasks created by a User
 // Handler for HTTP Get - "/tasks/users/{id}"
-// Returns all Tasks created by a User
 func GetTasksByUser(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
 	user := vars["id"]
 	context := NewContext()
 	defer context.Close()
-	c := context.DbCollection("tasks")
-	repo := &data.TaskRepository{c}
+	col := context.DbCollection("tasks")
+	repo := &data.TaskRepository{C: col}
 	tasks := repo.GetByUser(user)
 	j, err := json.Marshal(TasksResource{Data: tasks})
 	if err != nil {
@@ -138,8 +146,8 @@ func GetTasksByUser(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
+// UpdateTask update an existing Task document
 // Handler for HTTP Put - "/tasks/{id}"
-// Update an existing Task document
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	// Get id from the incoming url
 	vars := mux.Vars(r)
@@ -160,8 +168,8 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	task.Id = id
 	context := NewContext()
 	defer context.Close()
-	c := context.DbCollection("tasks")
-	repo := &data.TaskRepository{c}
+	col := context.DbCollection("tasks")
+	repo := &data.TaskRepository{C: col}
 	// Update an existing Task document
 	if err := repo.Update(task); err != nil {
 		common.DisplayAppError(
@@ -171,20 +179,20 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 			500,
 		)
 		return
-	} else {
-		w.WriteHeader(http.StatusNoContent)
 	}
+	w.WriteHeader(http.StatusNoContent)
+
 }
 
+// DeleteTask deelete an existing Task document
 // Handler for HTTP Delete - "/tasks/{id}"
-// Delete an existing Task document
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	context := NewContext()
 	defer context.Close()
-	c := context.DbCollection("tasks")
-	repo := &data.TaskRepository{c}
+	col := context.DbCollection("tasks")
+	repo := &data.TaskRepository{C: col}
 	// Delete an existing Task document
 	err := repo.Delete(id)
 	if err != nil {

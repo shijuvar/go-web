@@ -18,6 +18,7 @@ type (
 	}
 	configuration struct {
 		Server, MongoDBHost, DBUser, DBPwd, Database string
+		LogLevel int
 	}
 )
 
@@ -27,7 +28,8 @@ func DisplayAppError(w http.ResponseWriter, handlerError error, message string, 
 		Message:    message,
 		HttpStatus: code,
 	}
-	log.Printf("AppError]: %s\n", handlerError)
+	//log.Printf("AppError]: %s\n", handlerError)
+	Error.Printf("AppError]: %s\n", handlerError)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(code)
 	if j, err := json.Marshal(errorResource{Data: errObj}); err == nil {
