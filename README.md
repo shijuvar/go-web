@@ -2,7 +2,7 @@
 Source code for the book "Web Development with Go" published by Apress.
 
 ## TaskManager RESTful API
-Sample REST API app with Go and MongoDB 
+Sample REST API app with Go and MongoDB for chapter 9.
 
 ### Updates on 22-Jun-2016 in TaskManager App
 1. Upgraded the package jwt-go and modified the source in common/auth.go.
