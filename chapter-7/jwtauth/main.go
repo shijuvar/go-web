@@ -1,3 +1,7 @@
+
+// PLEASE REFER THE SOURCE AT https://github.com/shijuvar/go-web/blob/master/taskmanager/common/auth.go 
+// in which I have updated the source for latest API changes of go-jwt package.
+
 package main
 
 import (
