@@ -5,15 +5,14 @@ import (
 	"net/http"
 
 	"github.com/codegangsta/negroni"
-	"github.com/shijuvar/go-web/taskmanager/common"
+	_ "github.com/shijuvar/go-web/taskmanager/common"
 	"github.com/shijuvar/go-web/taskmanager/routers"
 )
 
 //Entry point of the program
 func main() {
 
-	// Calls startup logic
-	common.StartUp()
+	//common.StartUp() - Replaced with init method
 	// Get the mux router object
 	router := routers.InitRoutes()
 	// Create a negroni instance

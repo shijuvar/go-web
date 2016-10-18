@@ -72,15 +72,13 @@ func GenerateJWT(name, role string) (string, error) {
 			Issuer:    "admin",
 		},
 	}
-	log.Println("before token")
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 
-	log.Println("before key")
 	ss, err := token.SignedString(signKey)
 	if err != nil {
 		return "", err
 	}
-	log.Println("after key")
+
 	return ss, nil
 }
 
