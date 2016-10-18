@@ -76,13 +76,13 @@ func BenchmarkReverse(b *testing.B) {
 	}
 }
 
-//Example code for Reverse function
+// Example code for Reverse function
 func ExampleReverse() {
 	fmt.Println(Reverse("Hello, World"))
 	// Output: dlroW ,olleH
 }
 
-//Example code for Reverse function
+// Example code for Reverse function
 func ExampleSwapCase() {
 	fmt.Println(SwapCase("Hello, World"))
 	// Output: hELLO, wORLD

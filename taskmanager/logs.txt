@@ -3,3 +3,7 @@ ERROR: 2016/06/22 13:41:02 utils.go:32: AppError]: key is invalid
 ERROR: 2016/06/22 13:41:12 utils.go:32: AppError]: key is invalid
 ERROR: 2016/06/22 13:41:13 utils.go:32: AppError]: key is invalid
 ERROR: 2016/06/22 16:29:54 utils.go:32: AppError]: token is expired by 2h9m53s
+ERROR: 2016/08/29 11:24:29 utils.go:32: AppError]: illegal base64 data at input byte 4
+ERROR: 2016/08/29 11:25:15 utils.go:32: AppError]: illegal base64 data at input byte 4
+ERROR: 2016/08/29 11:28:28 utils.go:32: AppError]: illegal base64 data at input byte 4
+ERROR: 2016/08/29 11:32:43 utils.go:32: AppError]: invalid character '\u0086' looking for beginning of value
