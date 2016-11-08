@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/codegangsta/negroni"
-	_ "github.com/shijuvar/go-web/taskmanager/common"
+	common "github.com/shijuvar/go-web/taskmanager/common"
 	"github.com/shijuvar/go-web/taskmanager/routers"
 )
 
