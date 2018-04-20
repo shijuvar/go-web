@@ -29,7 +29,8 @@ func main() {
 	session.SetMode(mgo.Monotonic, true)
 	//get collection
 	c := session.DB("taskdb").C("categories")
-	c.RemoveAll(nil)
+	// Delete all collections before inserting
+	// c.RemoveAll(nil)
 	doc := Category{
 		bson.NewObjectId(),
 		"Open Source",
