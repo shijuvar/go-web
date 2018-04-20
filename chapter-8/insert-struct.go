@@ -46,6 +46,9 @@ func main() {
 	//insert two category objects
 	err = c.Insert(&Category{bson.NewObjectId(), "R & D", "R & D Tasks"},
 		&Category{bson.NewObjectId(), "Project", "Project Tasks"})
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	var count int
 	count, err = c.Count()
