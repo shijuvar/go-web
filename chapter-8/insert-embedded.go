@@ -50,7 +50,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%d records inserted", count)
+	fmt.Printf("%d records inserted\n", count)
 
 	iter := c.Find(nil).Iter()
 	result := Category{}
